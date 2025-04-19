@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Images
+Route::get('/images/{imageName}', [ProdukController::class, 'image']);
+
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // Auth
@@ -23,8 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/kategoris/{kategori}', [KategoriController::class, 'show']);
     
     // Produk (Read operations for everyone, write operations for admin)
-    Route::get('/produks', [ProdukController::class, 'index']);
-    Route::get('/produks/{produk}', [ProdukController::class, 'show']);
+    Route::get('/produk', [ProdukController::class, 'index']);
+    Route::get('/produk/{id}', [ProdukController::class, 'show']);
+    Route::get('/produk-kategori/{idKategori}', [ProdukController::class, 'byKategori']);
     
     // Varian Produk (Read operations for everyone)
     Route::get('/varian-produks', [VarianProdukController::class, 'index']);
@@ -43,9 +47,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/kategoris/{kategori}', [KategoriController::class, 'destroy']);
         
         // Produk management
-        Route::post('/produks', [ProdukController::class, 'store']);
-        Route::put('/produks/{produk}', [ProdukController::class, 'update']);
-        Route::delete('/produks/{produk}', [ProdukController::class, 'destroy']);
+        Route::post('/produk', [ProdukController::class, 'store']);
+        Route::put('/produk/{id}', [ProdukController::class, 'update']);
+        Route::delete('/produk/{id}', [ProdukController::class, 'delete']);
         
         // Varian Produk management
         Route::post('/varian-produks', [VarianProdukController::class, 'store']);
