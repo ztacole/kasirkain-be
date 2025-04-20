@@ -7,6 +7,7 @@ use App\Http\Resources\ProdukResource;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class ProdukController extends Controller
 {
@@ -27,12 +28,19 @@ class ProdukController extends Controller
     // POST Produk
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:100',
-            'harga' => 'required|numeric',
-            'gambar' => 'nullable|image|max:2048',
-            'id_kategori' => 'required|exists:kategori,id',
-        ]);
+        try {
+            $request->validate([
+                'nama' => 'required|string|max:100',
+                'harga' => 'required|numeric',
+                'gambar' => 'nullable|image|max:2048',
+                'id_kategori' => 'required|exists:kategori,id',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->validator->errors()->first(),
+            ], 400);
+        }
 
         $data = $request->all();
         
@@ -86,13 +94,20 @@ class ProdukController extends Controller
             ], 404);
         }
 
-        $request->validate([
-            'nama' => 'sometimes|required|string|max:100',
-            'harga' => 'sometimes|required|numeric',
-            'gambar' => 'nullable|image|max:2048',
-            'id_kategori' => 'sometimes|required|exists:kategori,id',
-            'is_deleted' => 'sometimes|boolean',
-        ]);
+        try {
+            $request->validate([
+                'nama' => 'sometimes|required|string|max:100',
+                'harga' => 'sometimes|required|numeric',
+                'gambar' => 'nullable|image|max:2048',
+                'id_kategori' => 'sometimes|required|exists:kategori,id',
+                'is_deleted' => 'sometimes|boolean',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->validator->errors()->first(),
+            ], 400);
+        }
 
         $data = $request->all();
         

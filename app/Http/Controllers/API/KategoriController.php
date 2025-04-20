@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use App\Http\Resources\KategoriResource;
+use Illuminate\Validation\ValidationException;
 
 class KategoriController extends Controller
 {
@@ -21,9 +22,16 @@ class KategoriController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:100',
-        ]);
+        try {
+            $request->validate([
+                'nama' => 'required|string|max:100',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->validator->errors()->first(),
+            ], 400);
+        }
 
         $kategori = Kategori::create($request->all());
 
@@ -62,9 +70,16 @@ class KategoriController extends Controller
             ], 404);
         }
 
-        $request->validate([
-            'nama' => 'required|string|max:100',
-        ]);
+        try {
+            $request->validate([
+                'nama' => 'required|string|max:100',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->validator->errors()->first(),
+            ], 400);
+        }
 
         $kategori->update($request->all());
 

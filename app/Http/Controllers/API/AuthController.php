@@ -12,11 +12,18 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string|max:20|unique:users',
-            'password' => 'required|string|min:6|max:20',
-            'is_admin' => 'sometimes|boolean',
-        ]);
+        try {
+            $request->validate([
+                'username' => 'required|string|max:20|unique:users',
+                'password' => 'required|string|min:6|max:20',
+                'is_admin' => 'sometimes|boolean',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->validator->errors()->first(),
+            ], 400);
+        }
 
         $user = User::create([
             'username' => $request->username,

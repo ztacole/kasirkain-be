@@ -7,6 +7,7 @@ use App\Http\Resources\VarianProdukResource;
 use App\Models\Produk;
 use App\Models\VarianProduk;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class VarianProdukController extends Controller
 {
@@ -51,13 +52,20 @@ class VarianProdukController extends Controller
             'barcode' => 'PRD' . $request->id_produk . time(),
         ]);
 
-        $request->validate([
-            'id_produk' => 'required|exists:produk,id',
-            'ukuran' => 'required|in:S,M,L,XL,XXL,Lainnya',
-            'warna' => 'required|string|max:20',
-            'barcode' => 'required|string|max:30|unique:varian_produk,barcode',
-            'stok' => 'required|integer|min:0',
-        ]);
+        try {
+            $request->validate([
+                'id_produk' => 'required|exists:produk,id',
+                'ukuran' => 'required|in:S,M,L,XL,XXL,Lainnya',
+                'warna' => 'required|string|max:20',
+                'barcode' => 'required|string|max:30|unique:varian_produk,barcode',
+                'stok' => 'required|integer|min:0',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->validator->errors()->first(),
+            ], 400);
+        }
 
         $varian = VarianProduk::create($request->all());
         $data = new VarianProdukResource($varian->load('produk', 'produk.kategori'));
@@ -121,13 +129,21 @@ class VarianProdukController extends Controller
             ], 404);
         }
 
-        $request->validate([
-            'id_produk' => 'sometimes|required|exists:produk,id',
-            'ukuran' => 'sometimes|required|in:S,M,L,XL,XXL,Lainnya',
-            'warna' => 'sometimes|required|string|max:20',
-            'barcode' => 'sometimes|required|string|max:30|unique:varian_produk,barcode',
-            'stok' => 'sometimes|required|integer|min:0',
-        ]);
+        try {
+            $request->validate([
+                'id_produk' => 'prohibited',
+                'ukuran' => 'sometimes|required|in:S,M,L,XL,XXL,Lainnya',
+                'warna' => 'sometimes|required|string|max:20',
+                'barcode' => 'prohibited',
+                'stok' => 'sometimes|required|integer|min:0',
+            ]);
+        }
+        catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->validator->errors()->first(),
+            ], 400);
+        }
 
         $varianProduk->update($request->only([
             'ukuran',
