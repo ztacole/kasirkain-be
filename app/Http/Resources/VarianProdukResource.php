@@ -30,7 +30,9 @@ class VarianProdukResource extends JsonResource
                 'warna' => $this->warna,
                 'barcode' => $this->barcode,
                 'stok' => $this->stok
-            ]
+            ],
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }

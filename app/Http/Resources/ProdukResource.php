@@ -21,7 +21,9 @@ class ProdukResource extends JsonResource
             'harga' => $this->harga,
             'gambar' => $this->gambar,
             'kategori' => $this->kategori,
-            'varian_count' => $this->whenLoaded('varian', fn () => $this->varian->count())
+            'varian_count' => $this->whenLoaded('varian', fn () => $this->varian->count()),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }
