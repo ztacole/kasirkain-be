@@ -28,11 +28,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Produk (Read operations for everyone, write operations for admin)
     Route::get('/produk', [ProdukController::class, 'index']);
     Route::get('/produk/{id}', [ProdukController::class, 'show']);
-    Route::get('/produk-kategori/{idKategori}', [ProdukController::class, 'byKategori']);
+    Route::get('/produk/kategori/{idKategori}', [ProdukController::class, 'byKategori']);
     
     // Varian Produk (Read operations for everyone)
-    Route::get('/varian-produks', [VarianProdukController::class, 'index']);
-    Route::get('/varian-produks/{varianProduk}', [VarianProdukController::class, 'show']);
+    Route::get('/varian-produk/{idProduk}', [VarianProdukController::class, 'index']);
+    Route::get('/varian-produk/detail/{id}', [VarianProdukController::class, 'show']);
     
     // Transaksi (All users can create and view transactions)
     Route::get('/transaksis', [TransaksiController::class, 'index']);
@@ -52,9 +52,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/produk/{id}', [ProdukController::class, 'delete']);
         
         // Varian Produk management
-        Route::post('/varian-produks', [VarianProdukController::class, 'store']);
-        Route::put('/varian-produks/{varianProduk}', [VarianProdukController::class, 'update']);
-        Route::delete('/varian-produks/{varianProduk}', [VarianProdukController::class, 'destroy']);
+        Route::post('/varian-produk', [VarianProdukController::class, 'store']);
+        Route::put('/varian-produk/{id}', [VarianProdukController::class, 'update']);
+        Route::delete('/varian-produk/{id}', [VarianProdukController::class, 'destroy']);
         
         // Delete transactions (if needed)
         Route::delete('/transaksis/{transaksi}', [TransaksiController::class, 'destroy']);

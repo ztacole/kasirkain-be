@@ -20,7 +20,7 @@ class ProdukResource extends JsonResource
             'nama' => $this->nama,
             'harga' => $this->harga,
             'gambar' => $this->gambar,
-            'kategori' => new KategoriResource($this->whenLoaded('kategori')),
+            'kategori' => $this->kategori,
             'varian_count' => $this->whenLoaded('varian', fn () => $this->varian->count())
         ];
     }
