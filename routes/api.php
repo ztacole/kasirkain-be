@@ -22,8 +22,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     
     // Kategori (Read operations for everyone, write operations for admin)
-    Route::get('/kategoris', [KategoriController::class, 'index']);
-    Route::get('/kategoris/{kategori}', [KategoriController::class, 'show']);
+    Route::get('/kategori', [KategoriController::class, 'index']);
+    Route::get('/kategori/{id}', [KategoriController::class, 'show']);
     
     // Produk (Read operations for everyone, write operations for admin)
     Route::get('/produk', [ProdukController::class, 'index']);
@@ -42,9 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin only routes
     Route::middleware('admin')->group(function () {
         // Kategori management
-        Route::post('/kategoris', [KategoriController::class, 'store']);
-        Route::put('/kategoris/{kategori}', [KategoriController::class, 'update']);
-        Route::delete('/kategoris/{kategori}', [KategoriController::class, 'destroy']);
+        Route::post('/kategori', [KategoriController::class, 'store']);
+        Route::put('/kategori/{id}', [KategoriController::class, 'update']);
+        Route::delete('/kategori/{id}', [KategoriController::class, 'destroy']);
         
         // Produk management
         Route::post('/produk', [ProdukController::class, 'store']);
