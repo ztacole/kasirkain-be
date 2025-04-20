@@ -60,7 +60,7 @@ class VarianProdukController extends Controller
         ]);
 
         $varian = VarianProduk::create($request->all());
-        $data = new VarianProdukResource($varian);
+        $data = new VarianProdukResource($varian->load('produk', 'produk.kategori'));
 
         return response()->json([
             'status' => 'success',
@@ -71,7 +71,8 @@ class VarianProdukController extends Controller
 
     public function show($id)
     {
-        $varianProduk = VarianProduk::find($id);
+        $varianProduk = VarianProduk::with('produk', 'produk.kategori')
+            ->find($id);
 
         if (!$varianProduk) {
             return response()->json([
@@ -100,7 +101,8 @@ class VarianProdukController extends Controller
 
     public function update(Request $request, $id)
     {
-        $varianProduk = VarianProduk::find($id);
+        $varianProduk = VarianProduk::with('produk', 'produk.kategori')
+            ->find($id);
 
         if (!$varianProduk) {
             return response()->json([
@@ -120,14 +122,18 @@ class VarianProdukController extends Controller
         }
 
         $request->validate([
-            'id_produk' => 'prohibited',
+            'id_produk' => 'sometimes|required|exists:produk,id',
             'ukuran' => 'sometimes|required|in:S,M,L,XL,XXL,Lainnya',
             'warna' => 'sometimes|required|string|max:20',
-            'barcode' => 'prohibited',
+            'barcode' => 'sometimes|required|string|max:30|unique:varian_produk,barcode',
             'stok' => 'sometimes|required|integer|min:0',
         ]);
 
-        $varianProduk->update($request->all());
+        $varianProduk->update($request->only([
+            'ukuran',
+            'warna',
+            'stok'
+        ]));
         $data = new VarianProdukResource($varianProduk);
 
         return response()->json([

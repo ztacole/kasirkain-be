@@ -15,9 +15,8 @@ class VarianProdukResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $produk = Produk::with('varian', 'kategori')
-            ->find($this->id_produk);
-
+        $produk = $this->produk;
+        
         return [
             'id' => $produk->id,
             'nama' => $produk->nama,

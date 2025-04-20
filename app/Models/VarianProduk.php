@@ -11,6 +11,8 @@ class VarianProduk extends Model
 
     protected $table = 'varian_produk';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id_produk',
         'ukuran',

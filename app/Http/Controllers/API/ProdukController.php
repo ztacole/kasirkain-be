@@ -42,7 +42,7 @@ class ProdukController extends Controller
         }
 
         $produk = Produk::create($data);
-        $response = new ProdukResource($produk);
+        $response = new ProdukResource($produk->load('kategori', 'varian'));
 
         return response()->json([
             'status' => 'success',
@@ -107,11 +107,12 @@ class ProdukController extends Controller
         }
 
         $produk->update($data);
+        $response = new ProdukResource($produk->load('kategori', 'varian'));
 
         return response()->json([
             'status' => 'success',
             'message' => 'Produk updated successfully',
-            'data' => $produk,
+            'data' => $response,
         ]);
     }
 
