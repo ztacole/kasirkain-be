@@ -150,19 +150,4 @@ class ProdukController extends Controller
 
         return Storage::download('public/images/produk/' . $produk->gambar);
     }
-
-    // GET Produk By Kategori
-    public function byKategori($idKategori)
-    {
-        $listProduk = Produk::with('kategori', 'varian')
-            ->where('id_kategori', $idKategori)
-            ->where('is_deleted', 0)
-            ->get();
-        $response = ProdukResource::collection($listProduk);
-            
-        return response()->json([
-            'status' => 'success',
-            'data' => $response,
-        ]);
-    }
 }

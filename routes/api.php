@@ -28,7 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Produk (Read operations for everyone, write operations for admin)
     Route::get('/produk', [ProdukController::class, 'index']);
     Route::get('/produk/{id}', [ProdukController::class, 'show']);
-    Route::get('/produk/kategori/{idKategori}', [ProdukController::class, 'byKategori']);
     
     // Varian Produk (Read operations for everyone)
     Route::get('/varian-produk/{idProduk}', [VarianProdukController::class, 'index']);
