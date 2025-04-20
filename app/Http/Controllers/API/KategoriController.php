@@ -12,11 +12,10 @@ class KategoriController extends Controller
     public function index()
     {
         $kategori = Kategori::all();
-        $data = KategoriResource::collection($kategori);
 
         return response()->json([
             'status' => 'success',
-            'data' => $data,
+            'data' => $kategori,
         ]);
     }
 
