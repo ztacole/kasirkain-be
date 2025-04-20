@@ -11,6 +11,8 @@ class DetailTransaksi extends Model
 
     protected $table = 'detail_transaksi';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id_transaksi',
         'id_varian_produk',

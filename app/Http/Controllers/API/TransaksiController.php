@@ -3,42 +3,61 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TransaksiResource;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
 use App\Models\VarianProduk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class TransaksiController extends Controller
 {
     public function index()
     {
-        $transaksis = Transaksi::with('user', 'details.varianProduk.produk')->get();
+        $transaksi = Transaksi::with('user', 'detail.varianProduk.produk')->get();
+        $response = $transaksi->map(function ($transaksi) {
+            return [
+                'id' => $transaksi->id,
+                'user' => $transaksi->user,
+                'jenis_pembayaran' => $transaksi->jenis_pembayaran,
+                'total' => $transaksi->detail->sum(function ($detail) {
+                    return $detail->varianProduk->produk->harga * $detail->jumlah;
+                }),
+                'created_at' => $transaksi->created_at,
+                'updated_at' => $transaksi->updated_at
+            ];
+        });
         
         return response()->json([
             'status' => 'success',
-            'data' => $transaksis,
+            'data' => $response,
         ]);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'id_user' => 'required|exists:users,id',
-            'jenis_pembayaran' => 'required|in:Cash,Transfer Bank,GoPay,OVO,DANA,ShopeePay,LinkAja,Lainnya',
-            'waktu' => 'required|date',
-            'details' => 'required|array|min:1',
-            'details.*.id_varian_produk' => 'required|exists:varian_produks,id',
-            'details.*.jumlah' => 'required|integer|min:1',
-        ]);
+        try {
+            $request->validate([
+                'id_user' => 'required|exists:users,id',
+                'jenis_pembayaran' => 'required|in:cash,transfer',
+                'details' => 'required|array',
+                'details.*.id_varian_produk' => 'required|exists:varian_produk,id',
+                'details.*.jumlah' => 'required|integer|min:1',
+            ]); 
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->validator->errors()->first(),
+            ], 400);
+        }
 
         DB::beginTransaction();
         try {
             // Create transaksi
             $transaksi = Transaksi::create([
                 'id_user' => $request->id_user,
-                'jenis_pembayaran' => $request->jenis_pembayaran,
-                'waktu' => $request->waktu,
+                'jenis_pembayaran' => $request->jenis_pembayaran
             ]);
 
             // Create detail transaksi and update stock
@@ -64,12 +83,12 @@ class TransaksiController extends Controller
 
             DB::commit();
 
-            $transaksi->load('user', 'details.varianProduk.produk');
+            $data = $transaksi->load('user', 'detail.varianProduk.produk.kategori');
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Transaksi created successfully',
-                'data' => $transaksi,
+                'data' => $data,
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -80,27 +99,23 @@ class TransaksiController extends Controller
         }
     }
 
-    public function show(Transaksi $transaksi)
+    public function show($id)
     {
-        $transaksi->load('user', 'details.varianProduk.produk');
+        $transaksi = Transaksi::with('user', 'detail.varianProduk.produk.kategori')
+            ->find($id);
+
+        if (!$transaksi) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Transaksi not found',
+            ], 404);
+        }
+
+        $data = new TransaksiResource($transaksi);
         
         return response()->json([
             'status' => 'success',
-            'data' => $transaksi,
+            'data' => $data,
         ]);
-    }
-
-    // Transactions generally shouldn't be updated after creation in a POS system,
-    // but if needed, you can implement update method
-    
-    public function destroy(Transaksi $transaksi)
-    {
-        // In a real-world application, you might want to use soft deletes instead
-        // or disallow deletion of transactions altogether
-        
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Deletion of transactions is not allowed',
-        ], 403);
     }
 }

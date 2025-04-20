@@ -34,9 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/varian-produk/detail/{id}', [VarianProdukController::class, 'show']);
     
     // Transaksi (All users can create and view transactions)
-    Route::get('/transaksis', [TransaksiController::class, 'index']);
-    Route::post('/transaksis', [TransaksiController::class, 'store']);
-    Route::get('/transaksis/{transaksi}', [TransaksiController::class, 'show']);
+    Route::get('/transaksi', [TransaksiController::class, 'index']);
+    Route::post('/transaksi', [TransaksiController::class, 'store']);
+    Route::get('/transaksi/{id}', [TransaksiController::class, 'show']);
     
     // Admin only routes
     Route::middleware('admin')->group(function () {
@@ -54,8 +54,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/varian-produk', [VarianProdukController::class, 'store']);
         Route::put('/varian-produk/{id}', [VarianProdukController::class, 'update']);
         Route::delete('/varian-produk/{id}', [VarianProdukController::class, 'destroy']);
-        
-        // Delete transactions (if needed)
-        Route::delete('/transaksis/{transaksi}', [TransaksiController::class, 'destroy']);
     });
 });

@@ -14,7 +14,6 @@ class Transaksi extends Model
     protected $fillable = [
         'id_user',
         'jenis_pembayaran',
-        'waktu',
     ];
 
     public function user()
