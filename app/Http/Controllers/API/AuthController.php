@@ -48,9 +48,10 @@ class AuthController extends Controller
         $user = User::where('username', $request->username)->first();
 
         if (!$user || ($request->password !== $user->password)) {
-            throw ValidationException::withMessages([
-                'username' => ['The provided credentials are incorrect.'],
-            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Wrong username or password',
+            ], 400);
         }
 
         // Revoke previous tokens
