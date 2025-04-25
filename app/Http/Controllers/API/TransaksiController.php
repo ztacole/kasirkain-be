@@ -13,9 +13,26 @@ use Illuminate\Validation\ValidationException;
 
 class TransaksiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $transaksi = Transaksi::with('user', 'detail.varianProduk.produk')->get();
+        $transaksi = Transaksi::with('user', 'detail.varianProduk.produk')->orderByDesc('created_at')->get();
+
+        if ($request->has('id_user')) {
+            $transaksi = $transaksi->where('id_user', $request->id_user);
+        }
+
+        if ($request->has('month')) {
+            $transaksi = $transaksi->whereMonth('created_at', $request->month);
+        }
+
+        if ($request->has('year')) {
+            $transaksi = $transaksi->whereYear('created_at', $request->year);
+        }
+
+        if ($request->has('jenis_pembayaran')) {
+            $transaksi = $transaksi->where('jenis_pembayaran', $request->jenis_pembayaran);
+        }
+
         $response = $transaksi->map(function ($transaksi) {
             return [
                 'id' => $transaksi->id,
@@ -24,8 +41,7 @@ class TransaksiController extends Controller
                 'total' => $transaksi->detail->sum(function ($detail) {
                     return $detail->varianProduk->produk->harga * $detail->jumlah;
                 }),
-                'created_at' => $transaksi->created_at,
-                'updated_at' => $transaksi->updated_at
+                'created_at' => $transaksi->created_at
             ];
         });
         

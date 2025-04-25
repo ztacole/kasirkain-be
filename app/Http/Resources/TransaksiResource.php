@@ -28,8 +28,7 @@ class TransaksiResource extends JsonResource
             'jenis_pembayaran' => $this->jenis_pembayaran,
             'total' => $total,
             'details' => DetailTransaksiResource::collection($this->detail),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'created_at' => $this->created_at
         ];
     }
 }

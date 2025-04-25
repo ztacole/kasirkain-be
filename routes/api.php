@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Images
-Route::get('/images/{imageName}', [ProdukController::class, 'image']);
-
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // Auth
@@ -28,7 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Produk (Read operations for everyone, write operations for admin)
     Route::get('/produk', [ProdukController::class, 'index']);
     Route::get('/produk/{id}', [ProdukController::class, 'show']);
-    
+    Route::get('/produk/{imageName}/photo', [ProdukController::class, 'image']);
+
     // Varian Produk (Read operations for everyone)
     Route::get('/varian-produk/{idProduk}', [VarianProdukController::class, 'index']);
     Route::get('/varian-produk/detail/{id}', [VarianProdukController::class, 'show']);

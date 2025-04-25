@@ -12,11 +12,20 @@ use Illuminate\Validation\ValidationException;
 class ProdukController extends Controller
 {
     // GET Produk
-    public function index()
+    public function index(Request $request)
     {
         $listProduk = Produk::with('kategori', 'varian')
             ->where('is_deleted', 0)
             ->get();
+
+        if ($request->has('kategori')) {
+            $listProduk = $listProduk->where('id_kategori', $request->kategori);
+        }
+        
+        if ($request->has('search')) {
+            $listProduk = $listProduk->where('nama', 'like', '%' . $request->search . '%');
+        }
+
         $response = ProdukResource::collection($listProduk);
             
         return response()->json([

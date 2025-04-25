@@ -40,10 +40,17 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
+        try {
+            $request->validate([
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->validator->errors()->first(),
+            ], 400);
+        }
 
         $user = User::where('username', $request->username)->first();
 
