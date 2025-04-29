@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProdukResource extends JsonResource
+class EventDetailResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,11 +16,12 @@ class ProdukResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nama' => $this->nama,
-            'harga' => $this->harga,
-            'gambar' => $this->gambar,
-            'kategori' => $this->kategori,
-            'varian_count' => $this->whenLoaded('varian', fn () => $this->varian->count()),
+            'name' => $this->name,
+            'description' => $this->description,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+            'discount_percentage' => $this->discount_percentage,
+            'products' => EventProductResource::collection($this->eventProducts),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

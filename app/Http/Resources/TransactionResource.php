@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TransaksiResource extends JsonResource
+class TransactionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,8 +15,8 @@ class TransaksiResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $total = $this->detail->sum(function ($detail) {
-            return $detail->varianProduk->produk->harga * $detail->jumlah;
+        $total = $this->details->sum(function ($details) {
+            return $details->productVariant->product->price * $details->quantity;
         });
 
         return [
@@ -25,9 +25,9 @@ class TransaksiResource extends JsonResource
                 'id' => $this->user->id,
                 'username' => $this->user->username
             ],
-            'jenis_pembayaran' => $this->jenis_pembayaran,
+            'payment_type' => $this->payment_type,
             'total' => $total,
-            'details' => DetailTransaksiResource::collection($this->detail),
+            'details' => TransactionDetailResource::collection($this->details),
             'created_at' => $this->created_at
         ];
     }
