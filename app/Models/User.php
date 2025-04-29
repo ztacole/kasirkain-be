@@ -11,8 +11,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table = 'user';
-
     protected $fillable = [
         'username',
         'password',
@@ -23,8 +21,8 @@ class User extends Authenticatable
         'password',
     ];
 
-    public function transaksi()
+    public function transactions()
     {
-        return $this->hasMany(Transaksi::class, 'id_user');
+        return $this->hasMany(Transaction::class, 'user_id');
     }
 }
