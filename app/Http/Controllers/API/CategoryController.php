@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Kategori;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Resources\KategoriResource;
 use Illuminate\Validation\ValidationException;
 
-class KategoriController extends Controller
+class CategoryController extends Controller
 {
     public function index()
     {
-        $kategori = Kategori::all();
+        $categories = Category::all();
 
         return response()->json([
             'status' => 'success',
-            'data' => $kategori,
+            'data' => $categories,
         ]);
     }
 
@@ -24,7 +24,7 @@ class KategoriController extends Controller
     {
         try {
             $request->validate([
-                'nama' => 'required|string|max:100',
+                'name' => 'required|string|max:100',
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -33,46 +33,46 @@ class KategoriController extends Controller
             ], 400);
         }
 
-        $kategori = Kategori::create($request->all());
+        $category = Category::create($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Kategori created successfully',
-            'data' => $kategori,
+            'message' => 'Category created successfully',
+            'data' => $category,
         ], 201);
     }
 
     public function show($id)
     {
-        $kategori = Kategori::find($id);
+        $category = Category::find($id);
 
-        if (!$kategori) {
+        if (!$category) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Kategori not found',
+                'message' => 'Category not found',
             ], 404);
         }
 
         return response()->json([
             'status' => 'success',
-            'data' => $kategori,
+            'data' => $category,
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        $kategori = Kategori::find($id);
+        $category = Category::find($id);
 
-        if (!$kategori) {
+        if (!$category) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Kategori not found',
+                'message' => 'Category not found',
             ], 404);
         }
 
         try {
             $request->validate([
-                'nama' => 'required|string|max:100',
+                'name' => 'required|string|max:100',
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -81,39 +81,39 @@ class KategoriController extends Controller
             ], 400);
         }
 
-        $kategori->update($request->all());
+        $category->update($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Kategori updated successfully',
-            'data' => $kategori,
+            'message' => 'Category updated successfully',
+            'data' => $category,
         ]);
     }
 
     public function destroy($id)
     {
-        $kategori = Kategori::find($id);
+        $category = Category::find($id);
 
-        if (!$kategori) {
+        if (!$category) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Kategori not found',
+                'message' => 'Category not found',
             ], 404);
         }
 
         // Check if category has products before deleting
-        if ($kategori->produks()->count() > 0) {
+        if ($category->products()->count() > 0) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Cannot delete category with associated products',
             ], 400);
         }
 
-        $kategori->delete();
+        $category->delete();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Kategori deleted successfully',
+            'message' => 'Category deleted successfully',
         ]);
     }
 }

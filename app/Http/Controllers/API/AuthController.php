@@ -14,8 +14,8 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
-                'username' => 'required|string|max:20|unique:user',
-                'password' => 'required|string|min:6|max:20',
+                'username' => 'required|string|max:20|unique:users',
+                'password' => 'required|string|min:6|max:255',
                 'is_admin' => 'sometimes|boolean',
             ]);
         } catch (ValidationException $e) {
@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         $user = User::create([
             'username' => $request->username,
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
             'is_admin' => $request->is_admin ?? 0,
         ]);
 
@@ -54,10 +54,17 @@ class AuthController extends Controller
 
         $user = User::where('username', $request->username)->first();
 
-        if (!$user || ($request->password !== $user->password)) {
+        if (!$user || ($user->username != $request->username)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Wrong username or password',
+                'message' => 'User not found',
+            ], 400);
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Wrong password',
             ], 400);
         }
 
@@ -69,7 +76,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Login successful',
-            'user' => $user,
+            'is_admin' => $user->is_admin,
             'token' => $token,
         ]);
     }
