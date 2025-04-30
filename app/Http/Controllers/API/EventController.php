@@ -14,7 +14,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::orderByDesc('id')->all();
+        $events = Event::orderByDesc('id')->get();
 
         $response = EventResource::collection($events);
 
@@ -26,7 +26,7 @@ class EventController extends Controller
 
     public function show($id)
     {
-        $event = Event::load('eventProducts')->find($id);
+        $event = Event::with('eventProducts')->find($id);
 
         if (!$event) {
             return response()->json([

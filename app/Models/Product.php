@@ -28,7 +28,7 @@ class Product extends Model
 
     public function activeEvents() 
     {
-        return $this->belongsToMany(Event::class, 'event_product')
+        return $this->belongsToMany(Event::class, 'event_product', 'product_id', 'event_id')
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now());
     }

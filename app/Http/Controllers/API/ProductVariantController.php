@@ -45,7 +45,7 @@ class ProductVariantController extends Controller
             'barcode' => 'PRD'
              . str_pad($request->product_id, 3, '0', STR_PAD_LEFT)
              . strtoupper($request->size)
-             . strtoupper($request->color),
+             . strtoupper(str_replace(' ', '', $request->color)),
         ]);
 
         try {
