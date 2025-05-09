@@ -11,7 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'check.token.expiry' => \App\Http\Middleware\CheckTokenExpiry::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -23,7 +23,7 @@ class ProductVariantResource extends JsonResource
             $finalPrice = $product->price - ($product->price * $events->sortByDesc('discount_percentage')->first()->discount_percentage / 100);
             $discount = $events->sortByDesc('discount_percentage')->first()->discount_percentage;
         }
-        
+
         return [
             'id' => $product->id,
             'name' => $product->name,
@@ -31,11 +31,13 @@ class ProductVariantResource extends JsonResource
             'image' => $product->image,
             'category' => $product->category,
             'variants' => [
-                'id' => $this->id,
-                'size' => $this->size,
-                'color' => $this->color,
-                'barcode' => $this->barcode,
-                'stock' => $this->stock
+                [
+                    'id' => $this->id,
+                    'size' => $this->size,
+                    'color' => $this->color,
+                    'barcode' => $this->barcode,
+                    'stock' => $this->stock
+                ]
             ],
             'active_events' => EventResource::collection($events),
             'discount' => $discount,

@@ -17,7 +17,7 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/product/{imageName}/photo', [ProductController::class, 'image']);
 
 // Protected routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'check.token.expiry'])->group(function () {
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Varian Produk (Read operations for everyone)
     Route::get('/product-variants/{productId}', [ProductVariantController::class, 'index']);
-    Route::get('/product-variant/detail/{id}', [ProductVariantController::class, 'show']);
+    Route::get('/product-variant/detail/{barcode}', [ProductVariantController::class, 'show']);
     
     // Transaksi (All users can create and view transactions)
     Route::get('/transactions', [TransactionController::class, 'index']);

@@ -33,18 +33,28 @@ class TransactionController extends Controller
             $transactions = $transactions->where('payment_type', $request->payment_type);
         }
 
-        $response = $transactions->map(function ($transaction) {
+        $response = $transactions->groupBy(function ($transaction) {
+            return $transaction->created_at->format('Y-m-d');
+        })->map(function ($group, $date) {
+            $transactionGroupped =  $group->map(function ($transaction) {
+                return [
+                    'id' => $transaction->id,
+                    'user' => $transaction->user,
+                    'payment_type' => $transaction->payment_type,
+                    'productCount' => $transaction->details->count(),
+                    'total' => $transaction->details->sum(function ($details) {
+                        return $details->productVariant->product->price * $details->quantity;
+                    }),
+                    'created_at' => $transaction->created_at
+                ];
+            });
+
             return [
-                'id' => $transaction->id,
-                'user' => $transaction->user,
-                'payment_type' => $transaction->payment_type,
-                'total' => $transaction->detail->sum(function ($details) {
-                    return $details->productVariant->product->price * $details->quantity;
-                }),
-                'created_at' => $transaction->created_at
+                'date' => $date,
+                'transactions' => $transactionGroupped
             ];
-        });
-        
+        })->values();
+
         return response()->json([
             'status' => 'success',
             'data' => $response,
@@ -60,7 +70,7 @@ class TransactionController extends Controller
                 'details' => 'required|array',
                 'details.*.product_variant_id' => 'required|exists:product_variants,id',
                 'details.*.quantity' => 'required|integer|min:1',
-            ]); 
+            ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'status' => 'error',
@@ -128,7 +138,7 @@ class TransactionController extends Controller
         }
 
         $response = new TransactionResource($transaction);
-        
+
         return response()->json([
             'status' => 'success',
             'data' => $response,

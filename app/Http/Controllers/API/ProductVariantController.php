@@ -73,10 +73,9 @@ class ProductVariantController extends Controller
         ], 201);
     }
 
-    public function show($id)
+    public function show($barcode)
     {
-        $productVariant = ProductVariant::with('product', 'product.category', 'product.activeEvents')
-            ->find($id);
+        $productVariant = ProductVariant::with('product', 'product.category', 'product.activeEvents')->where('barcode', $barcode)->first();
 
         if (!$productVariant) {
             return response()->json([

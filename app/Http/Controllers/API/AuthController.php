@@ -67,9 +67,6 @@ class AuthController extends Controller
                 'message' => 'Wrong password',
             ], 400);
         }
-
-        // Revoke previous tokens
-        $user->tokens()->delete();
         
         $token = $user->createToken('auth_token')->plainTextToken;
 
