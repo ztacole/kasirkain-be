@@ -15,7 +15,7 @@ class TransactionController extends Controller
 {
     public function index(Request $request)
     {
-        $transactions = Transaction::with('user', 'details.productVariant.product')->orderByDesc('id')->get();
+        $transactions = Transaction::with('user', 'details.productVariant.product')->where('user_id', $request->user()->id)->withCount('details')->orderByDesc('id')->get();
 
         if ($request->has('user_id')) {
             $transactions = $transactions->where('user_id', $request->user_id);
@@ -39,7 +39,10 @@ class TransactionController extends Controller
             $transactionGroupped =  $group->map(function ($transaction) {
                 return [
                     'id' => $transaction->id,
-                    'user' => $transaction->user,
+                    'user' => [
+                        'id' => $transaction->user->id,
+                        'username' => $transaction->user->username
+                    ],
                     'payment_type' => $transaction->payment_type,
                     'productCount' => $transaction->details->count(),
                     'total' => $transaction->details->sum(function ($details) {
