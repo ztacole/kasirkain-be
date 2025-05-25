@@ -44,6 +44,8 @@ class TransactionController extends Controller
                         'username' => $transaction->user->username
                     ],
                     'payment_type' => $transaction->payment_type,
+                    'cash_received' => $transaction->cash_received,
+                    'change_returned' => $transaction->change_returned,
                     'productCount' => $transaction->details->count(),
                     'total' => $transaction->details->sum(function ($details) {
                         return $details->productVariant->product->price * $details->quantity;
@@ -70,6 +72,8 @@ class TransactionController extends Controller
             $request->validate([
                 'user_id' => 'required|exists:users,id',
                 'payment_type' => 'required|string|max:255',
+                'cash_received' => 'required|integer|min:0',
+                'change_returned' => 'required|integer|min:0',
                 'details' => 'required|array',
                 'details.*.product_variant_id' => 'required|exists:product_variants,id',
                 'details.*.quantity' => 'required|integer|min:1',
@@ -86,7 +90,9 @@ class TransactionController extends Controller
             // Create transaksi
             $transaction = Transaction::create([
                 'user_id' => $request->user_id,
-                'payment_type' => $request->payment_type
+                'payment_type' => $request->payment_type,
+                'cash_received' => $request->cash_received,
+                'change_returned' => $request->change_returned
             ]);
 
             // Create detail transaksi and update stock

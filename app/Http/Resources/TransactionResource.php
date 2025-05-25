@@ -26,6 +26,8 @@ class TransactionResource extends JsonResource
                 'username' => $this->user->username
             ],
             'payment_type' => $this->payment_type,
+            'cash_received' => $this->cash_received,
+            'change_returned' => $this->change_returned,
             'total' => $total,
             'details' => TransactionDetailResource::collection($this->details),
             'created_at' => $this->created_at

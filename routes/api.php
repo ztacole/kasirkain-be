@@ -35,7 +35,7 @@ Route::middleware(['auth:sanctum', 'check.token.expiry'])->group(function () {
     
     // Transaksi (All users can create and view transactions)
     Route::get('/transactions', [TransactionController::class, 'index']);
-    Route::post('/transaction', [TransactionController::class, 'store']);
+    Route::post('/checkout', [TransactionController::class, 'store']);
     Route::get('/transaction/{id}', [TransactionController::class, 'show']);
     
     // Event (Read operations for everyone, write operations for admin)
