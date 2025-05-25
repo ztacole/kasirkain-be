@@ -46,7 +46,7 @@ class TransactionController extends Controller
                     'payment_type' => $transaction->payment_type,
                     'cash_received' => $transaction->cash_received,
                     'change_returned' => $transaction->change_returned,
-                    'productCount' => $transaction->details->count(),
+                    'product_count' => $transaction->details->count(),
                     'total' => $transaction->details->sum(function ($details) {
                         return $details->productVariant->product->price * $details->quantity;
                     }),
