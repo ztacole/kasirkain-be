@@ -42,8 +42,6 @@ class ProductVariantResource extends JsonResource
             'active_events' => EventResource::collection($events),
             'discount' => $discount,
             'final_price' => $finalPrice,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
         ];
     }
 }

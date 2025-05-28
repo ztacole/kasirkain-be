@@ -136,8 +136,10 @@ class TransactionController extends Controller
 
     public function show($id)
     {
-        $transaction = Transaction::with('user', 'details.productVariant.product.category')
-            ->find($id);
+        $transaction = Transaction::with([
+            'user',
+            'details.productVariant.product.category',
+        ])->find($id);
 
         if (!$transaction) {
             return response()->json([
