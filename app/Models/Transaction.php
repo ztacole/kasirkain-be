@@ -16,6 +16,11 @@ class Transaction extends Model
         'change_returned'
     ];
 
+    protected $casts = [
+        'cash_received' => 'integer',
+        'change_returned' => 'integer'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
