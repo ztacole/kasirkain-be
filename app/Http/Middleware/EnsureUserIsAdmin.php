@@ -13,7 +13,7 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->is_admin !== 1) {
+        if ($request->user() && $request->user()->is_admin != 1) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized. Admin access required.',
