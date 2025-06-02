@@ -16,6 +16,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/product/{imageName}/photo', [ProductController::class, 'image']);
 
+Route::post('/product', [ProductController::class, 'store']);
+Route::put('/product/{id}', [ProductController::class, 'update']);
+Route::delete('/product/{id}', [ProductController::class, 'delete']);
+
 // Protected routes
 Route::middleware(['auth:sanctum', 'check.token.expiry'])->group(function () {
     // Auth
@@ -50,9 +54,9 @@ Route::middleware(['auth:sanctum', 'check.token.expiry'])->group(function () {
         Route::delete('/category/{id}', [CategoryController::class, 'destroy']);
         
         // Produk management
-        Route::post('/product', [ProductController::class, 'store']);
-        Route::put('/product/{id}', [ProductController::class, 'update']);
-        Route::delete('/product/{id}', [ProductController::class, 'delete']);
+        // Route::post('/product', [ProductController::class, 'store']);
+        // Route::put('/product/{id}', [ProductController::class, 'update']);
+        // Route::delete('/product/{id}', [ProductController::class, 'delete']);
         
         // Product Variant management
         Route::post('/product-variant', [ProductVariantController::class, 'store']);
