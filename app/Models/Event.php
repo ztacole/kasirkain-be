@@ -18,6 +18,10 @@ class Event extends Model
         'discount_percentage',
     ];
 
+    protected $casts = [
+        'discount_percentage' => 'integer',
+    ];
+
     public function eventProducts(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'event_product', 'event_id', 'product_id');
