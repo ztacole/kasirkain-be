@@ -24,11 +24,20 @@ class ProductController extends Controller
             $products = $products->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $response = ProductResource::collection($products->get());
+        $perPage = $request->get('per_page', 12);
+        $paginatedProducts = $products->paginate($perPage);
+
+        $response = ProductResource::collection($paginatedProducts);
             
         return response()->json([
             'status' => 'success',
             'data' => $response,
+            'meta' => [
+                'current_page' => $paginatedProducts->currentPage(),
+                'per_page' => $paginatedProducts->perPage(),
+                'total' => $paginatedProducts->total(),
+                'last_page' => $paginatedProducts->lastPage(),
+            ]
         ]);
     }
 
