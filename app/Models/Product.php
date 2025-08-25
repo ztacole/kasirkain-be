@@ -18,6 +18,7 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'integer'
+        
     ];
 
     public function category()
